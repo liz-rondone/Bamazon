@@ -12,17 +12,15 @@ var connection = mysql.createConnection({
     database: 'bamazondb'
 });
 
-connection.connect(function(err, res) {
+connection.connect(function(err) {
     if (err) throw err;
-    console.log("connection error", err);
-    console.log("connection response", res);
-    // createProduct();
+    console.log(err);
+    createProduct();
 
-    // connection.query("SELECT * FROM bamazondb.products", function(err, res) {
-    //     console.log("query error", err);
-    //     if (err) throw err;
-    //     console.log("query response", res);
-    // });
+    connection.query('SELECT * FROM bamazondb.products', function(err, res) {
+        if (err) throw err;
+        console.log(res);
+    });
 });
 
 // function runSearch() {
