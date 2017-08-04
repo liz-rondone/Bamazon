@@ -23,7 +23,11 @@ connection.query('SELECT * FROM products', function(err, res) {
     }
     //console.log(res);
     for (var i = 0; i < res.length; i++) {
-        console.log("[ " + res[i].item_id + " ]" + "Department: " + res[i].department_name);
+        console.log("[ " + res[i].item_id + " ] " + res[i].product_name);
+        console.log("Price: " + res[i].price);
+        console.log("Department: " + res[i].department_name);
+        console.log("Quantity Available: " + res[i].stock_qty);
+        console.log("-------------------------------------")
     }
     //console.log(res[0].department_name);
     // placeOrder();
