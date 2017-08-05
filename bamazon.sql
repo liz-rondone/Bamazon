@@ -23,6 +23,6 @@ VALUES ("Balexa", "Electronics", 59.99, 600),
 	   ("Stapler", "Office Products", 12.99, 270),
 	   ("Dog Treats", "Pet Supplies", 5.99, 400),
 	   ("Settlers of Catan", "Toys & Games", 24.99, 75);
-           
-           
-SELECT * FROM products;
+
+
+SELECT * FROM bamazondb.department_name;

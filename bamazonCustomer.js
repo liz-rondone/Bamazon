@@ -27,21 +27,76 @@ connection.query('SELECT * FROM products', function(err, res) {
         console.log("Price: " + res[i].price);
         console.log("Department: " + res[i].department_name);
         console.log("Quantity Available: " + res[i].stock_qty);
-        console.log("-------------------------------------")
+        console.log("-------------------------------------");
     }
     //console.log(res[0].department_name);
-    // placeOrder();
+    placeOrder();
 });
 
-// function runSearch() {
-//     inquirer
-//         .prompt({
-//             name: 'action',
-//             type: 'input',
-//             message: 'What is the ID of the product you would like to buy?',
-//         })
-//     .then(function(answer) {
-//         var query = "SELECT item_id FROM bamazondb WHERE ?";
+function placeOrder() {
+    inquirer
+        .prompt([
+            {
+                name: 'item',
+                type: 'input',
+                message: 'What is the ID of the product you would like to buy?',
+                // if a number isn't submitted it clears
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            {
+                name: 'quantity',
+                type: 'input',
+                message: 'How many would you like to buy?',
+                // if a number isn't submitted it clears
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        ])
+    .then(function(answer) {
         
-//     })
-// }
+        var answerID = answer.item; //"item" is from prompt name
+        var parseID = parseInt(answerID) -1; //item_id array doesn't start at 0
+        var parseQty = parseInt(answer.quantity); //"quantity" is from prompt name
+
+        connection.query("SELECT * FROM products", function(err, res) {
+            var itemCost = res[parseID].price;
+            var stockQty = res[parseID].stock_qty;
+            // var purchaseTotal = res[parseID].product_sales;
+            var stockNew = stockQty - parseQty;
+
+            if (parseQty > stockQty) {
+                // out of stock
+                console.log("Don't be greedy! There aren't enough in stock to meet your demand.");
+                placeOrder();
+            }
+            else {
+                // calculate the bill
+                var costTotal = parseQty * itemCost;
+
+                // update stock quantity in database
+                connection.query("UPDATE products SET ? WHERE ?", [
+                    {
+                        stock_qty: stockNew
+                    },
+                    {
+                        item_id: answerID
+                    }
+                ]);
+
+                console.log("Cough up: $" + costTotal);
+
+                // end connection
+                connection.end();
+            }
+        });
+    });
+}
